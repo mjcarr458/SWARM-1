@@ -51,26 +51,45 @@ namespace SWARM.Server.Controllers.Crse
         [Route("DeleteCourse/{pCourseNo}")]
         public async Task<IActionResult> DeleteCourse(int pCourseNo)
         {
-            Course itmCourse = await _context.Courses.Where(x => x.CourseNo == pCourseNo).FirstOrDefaultAsync();
-            _context.Remove(itmCourse);
-            await _context.SaveChangesAsync();
-            return Ok();
+            var trans = _context.Database.BeginTransaction();
+            try
+            {
+                Course itmCourse = await _context.Courses.Where(x => x.CourseNo == pCourseNo).FirstOrDefaultAsync();
+                _context.Remove(itmCourse);
+                await _context.SaveChangesAsync();
+                await trans.CommitAsync();
+                return Ok();
+            }
+            catch(Exception ex)
+            {
+                trans.Rollback();
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
         }
 
         [HttpPost]
+        [Route("PostCourse")]
         public async Task<IActionResult> Post([FromBody] CourseDTO _CourseDTO)
         {
             var trans = _context.Database.BeginTransaction();
             try
             {
-                var existCourse = await _context.Courses.Where(x => x.CourseNo == _CourseDTO.CourseNo).FirstOrDefaultAsync();
+                var _crse = await _context.Courses.Where(x => x.CourseNo == _CourseDTO.CourseNo).FirstOrDefaultAsync();
 
-                existCourse.Cost = _CourseDTO.Cost;
-                existCourse.Description = _CourseDTO.Description;
-                existCourse.Prerequisite = _CourseDTO.Prerequisite;
-                existCourse.PrerequisiteSchoolId = _CourseDTO.PrerequisiteSchoolId;
-                existCourse.SchoolId = _CourseDTO.SchoolId;
-                _context.Update(existCourse);
+
+                if(_crse != null)
+                {
+                    return StatusCode(StatusCodes.Status500InternalServerError, "Course already exists");
+                }
+                _crse = new Course();
+                _crse.CourseNo = _CourseDTO.CourseNo;
+                _crse.Cost = _CourseDTO.Cost;
+                _crse.Description = _CourseDTO.Description;
+                _crse.Prerequisite = _CourseDTO.Prerequisite;
+                _crse.PrerequisiteSchoolId = _CourseDTO.PrerequisiteSchoolId;
+                _crse.SchoolId = _CourseDTO.SchoolId;
+
+                _context.Courses.Add(_crse);
                 await _context.SaveChangesAsync();
                 trans.Commit();
 
@@ -82,6 +101,44 @@ namespace SWARM.Server.Controllers.Crse
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
+
+        [HttpPut]
+        [Route("PutCourse")]
+        public async Task<IActionResult> Put([FromBody] CourseDTO _CourseDTO)
+        {
+            var trans = _context.Database.BeginTransaction();
+            try
+            {
+                var _crse = await _context.Courses.Where(x => x.CourseNo == _CourseDTO.CourseNo).FirstOrDefaultAsync();
+
+
+                if (_crse == null)
+                {
+                    trans.Commit();
+                    await this.Post(_CourseDTO);
+                    return Ok();
+                }
+              
+                _crse.CourseNo = _CourseDTO.CourseNo;
+                _crse.Cost = _CourseDTO.Cost;
+                _crse.Description = _CourseDTO.Description;
+                _crse.Prerequisite = _CourseDTO.Prerequisite;
+                _crse.PrerequisiteSchoolId = _CourseDTO.PrerequisiteSchoolId;
+                _crse.SchoolId = _CourseDTO.SchoolId;
+
+                _context.Update(_crse);
+                await _context.SaveChangesAsync();
+                trans.Commit();
+
+                return Ok(_CourseDTO.CourseNo);
+            }
+            catch (Exception ex)
+            {
+                trans.Rollback();
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
+
 
 
 

@@ -7,6 +7,11 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="5.0.15" />
+    <PackageReference Include="Telerik.Documents.SpreadsheetStreaming.Trial" Version="2022.1.217" />
+    <PackageReference Include="Telerik.Recurrence.Trial" Version="0.2.0" />
+    <PackageReference Include="Telerik.UI.for.Blazor.Trial" Version="3.2.0" />
+    <PackageReference Include="Telerik.Zip.Trial" Version="2022.1.217" />
+    <PackageReference Include="Telerik.DataSource.Trial" Version="2.1.1" />
   </ItemGroup>
 
   <ItemGroup>
@@ -15,6 +20,23 @@
     <ProjectReference Include="..\Shared\SWARM.Shared.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Remove="Telerik.Documents.SpreadsheetStreaming.Trial" />
+    <None Remove="Telerik.Recurrence.Trial" />
+    <None Remove="Telerik.UI.for.Blazor.Trial" />
+    <None Remove="Telerik.Zip.Trial" />
+    <None Remove="Telerik.DataSource.Trial" />
+    <None Remove="Controllers\ENROLLMENT\" />
+    <None Remove="Controllers\Grade\" />
+    <None Remove="Controllers\GradeConversion\" />
+    <None Remove="Controllers\GradeType\" />
+    <None Remove="Controllers\GradeTypeWeight\" />
+    <None Remove="Controllers\Instructor\" />
+    <None Remove="Controllers\School\" />
+    <None Remove="Controllers\Section\" />
+    <None Remove="Controllers\Student\" />
+    <None Remove="Controllers\ZipCode\" />
+  </ItemGroup>
   <ItemGroup>
     <None Update="app.db" CopyToOutputDirectory="PreserveNewest" ExcludeFromSingleFile="true" />
   </ItemGroup>
@@ -28,4 +50,16 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="5.0.15" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Controllers\ENROLLMENT\" />
+    <Folder Include="Controllers\Grade\" />
+    <Folder Include="Controllers\GradeConversion\" />
+    <Folder Include="Controllers\GradeType\" />
+    <Folder Include="Controllers\GradeTypeWeight\" />
+    <Folder Include="Controllers\Instructor\" />
+    <Folder Include="Controllers\School\" />
+    <Folder Include="Controllers\Section\" />
+    <Folder Include="Controllers\Student\" />
+    <Folder Include="Controllers\ZipCode\" />
+  </ItemGroup>
 </Project>
